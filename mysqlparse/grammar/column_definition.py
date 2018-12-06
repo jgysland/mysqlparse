@@ -24,6 +24,8 @@ _index_type = Or([
     (Optional(CaselessKeyword("PRIMARY")) + CaselessKeyword("KEY")).setParseAction(replaceWith("primary_key"))
 ]).setResultsName("index_type")
 _comment = CaselessKeyword("COMMENT") + Or([QuotedString("'"), QuotedString('"')]).setResultsName("comment")
+_collate = CaselessKeyword("COLLATE") + Word(alphanums + '_')\
+        .setResultsName("collation_name")
 
 
 #
@@ -42,6 +44,7 @@ column_definition_syntax <<= (
             _auto_increment,
             _index_type,
             _comment,
+            _collate,
             _nullable.setResultsName("null")
         ])
     )

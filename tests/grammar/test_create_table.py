@@ -24,6 +24,23 @@ class CreateTableSyntaxTest(unittest.TestCase):
         self.assertEqual(statement.column_specification[1].column_name, "col_no1")
         self.assertEqual(len(statement.table_options), 0)
 
+    def test_create_table_with_collation(self):
+        statement = create_table_syntax.parseString("""
+        CREATE TABLE test_test (
+          id INT(11) PRIMARY KEY,
+          col_no1 VARCHAR(255) COLLATE utf8_general_ci DEFAULT NULL
+        );
+        """)
+
+        self.assertEqual(statement.statement_type, 'CREATE')
+        self.assertFalse(statement.temporary)
+        self.assertTrue(statement.overwrite)
+        self.assertEqual(statement.table_name, 'test_test')
+        self.assertEqual(statement.column_specification[0].column_name, "id")
+        self.assertEqual(statement.column_specification[1].column_name, "col_no1")
+        self.assertEqual(statement.column_specification[1].collation_name, "utf8_general_ci")
+        self.assertEqual(len(statement.table_options), 0)
+
     def test_create_table_with_options(self):
         statement = create_table_syntax.parseString("""
         CREATE TABLE test_test (
